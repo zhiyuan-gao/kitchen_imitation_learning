@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Dataset is intentionally not committed. Download it from Hugging Face.
+cup_to_sink/
+
+# Training/eval outputs and local logs.
+outputs/
+logs/
+runs/
+wandb/
+
+# Local environments and editor state.
+.env
+.venv/
+*.swp
+.DS_Store
