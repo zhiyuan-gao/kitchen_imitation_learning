@@ -6,6 +6,9 @@ __pycache__/
 # Dataset is intentionally not committed. Download it from Hugging Face.
 cup_to_sink/
 
+# Large Diffusion Policy checkpoints are stored separately.
+checkpoints/diffusion_*/
+
 # Training/eval outputs and local logs.
 outputs/
 logs/

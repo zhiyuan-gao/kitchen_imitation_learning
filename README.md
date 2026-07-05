@@ -15,6 +15,7 @@ git clone https://huggingface.co/datasets/yxzhan/cup_to_sink cup_to_sink
 scripts/train_cup_to_sink_act.sh
 scripts/train_cup_to_sink_diffusion.sh
 scripts/run_act_inference_example.py
+scripts/run_diffusion_inference_example.py
 checkpoints/act_100000/pretrained_model/
 ```
 
@@ -230,3 +231,53 @@ checkpoints/act_100000/pretrained_model
 最终训练 loss：约 `0.046`
 
 checkpoint 目录大小：约 `60 MB`
+
+## Diffusion Policy
+
+这个仓库只包含 Diffusion Policy 的训练和推理代码，不包含 diffusion checkpoint。我们训练好的 diffusion checkpoint 大约 `1.1 GB`，后续会单独放到其他地方。
+
+当前 diffusion 训练脚本是：
+
+```bash
+bash scripts/train_cup_to_sink_diffusion.sh
+```
+
+这版脚本会使用：
+
+```text
+policy.type=diffusion
+policy.resize_shape=[128,128]
+batch_size=2
+steps=100000
+```
+
+训练完成后，默认输出在：
+
+```text
+outputs/train/cup_to_sink_diffusion/checkpoints/100000/pretrained_model
+```
+
+如果你已经从其他地方下载了 diffusion checkpoint，可以放到：
+
+```text
+checkpoints/diffusion_100000/pretrained_model
+```
+
+然后运行离线推理检查：
+
+```bash
+python scripts/run_diffusion_inference_example.py \
+  --dataset-root ./cup_to_sink \
+  --checkpoint ./checkpoints/diffusion_100000/pretrained_model \
+  --sample-index 0
+```
+
+也可以直接传入任意 checkpoint 路径：
+
+```bash
+python scripts/run_diffusion_inference_example.py \
+  --dataset-root ./cup_to_sink \
+  --checkpoint /path/to/diffusion/pretrained_model
+```
+
+Diffusion Policy 的输入输出格式和 ACT 一样：输入是 4 路 RGB 图像加 8 维 state，输出是 8 维 Franka joint position target 加 `gripper_width`。不同点是 diffusion 推理时会执行 denoising，因此仿真 rollout 通常会比 ACT 慢。
